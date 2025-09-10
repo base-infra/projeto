@@ -16,7 +16,7 @@ from django.core.files.base import ContentFile
 import json   
 from django.http import HttpResponse
 from django.template.loader import get_template
-from weasyprint import HTML   
+# from weasyprint import HTML   
 from django.conf import settings 
 from django.core.files.storage import default_storage 
 import re

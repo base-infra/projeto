@@ -1,0 +1,744 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}" />
+
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Informações do Processo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e0e0e0;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            background-color: #f0f0f0;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #00264d;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }
+
+        .header-left {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            /* Opcional, centra também verticalmente se necessário */
+            text-align: center;
+            /* Para centralizar o texto dentro */
+            margin: 0 auto;
+            /* Centraliza a `div` dentro do seu contêiner */
+        }
+
+        .header-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #00264d;
+            margin-bottom: 5px;
+        }
+
+        .header-subtitle {
+            font-size: 18px;
+            line-height: 1.5;
+            font-weight: bold;
+            color: #00264d;
+            margin-bottom: 10px;
+        }
+
+        .process-number {
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #004080;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+            font-size: 16px;
+        }
+
+        th {
+            background-color: #00264d;
+            color: white;
+            font-weight: bold;
+        }
+
+        td.highlight {
+            font-weight: bold;
+            color: #00264d;
+        }
+
+        .item-table {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr 1fr;
+            border: 1px solid black;
+            margin-top: 20px;
+        }
+
+        .item-table div {
+            padding: 8px;
+            border-bottom: 1px solid black;
+            border-right: 1px solid black;
+            background-color: #e0e0e0;
+        }
+
+        .item-table div.header {
+            background-color: #00264d;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            margin: 0;
+        }
+
+        .item-table div:last-child {
+            border-right: none;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background-color: #00264d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background-color: #004080;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .legend {
+            margin-top: 30px;
+            border: 1px solid black;
+            padding: 10px;
+        }
+
+        .legend-title {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .color-box {
+            width: 30px;
+            height: 15px;
+            margin-right: 10px;
+            border: 1px solid black;
+        }
+
+        .yellow {
+            background-color: yellow;
+        }
+
+        .blue {
+            background-color: #004080;
+        }
+
+        .orange {
+            background-color: orange;
+        }
+
+        .lightblue {
+            background-color: #00bfff;
+        }
+
+        .gray {
+            background-color: gray;
+        }
+
+        .green {
+            background-color: green;
+            color: green;
+        }
+
+        .red {
+            background-color: red;
+            color: red;
+        }
+
+        .process-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            margin-top: 15px;
+            background-color: #003c78;
+            /* azul escuro */
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .process-item {
+            white-space: nowrap;
+        }
+    </style>
+    <style>
+        .orange {
+            color: orange;
+            font-weight: bold;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <a>{{checklist_data}}</a>
+    <a>recuperar_checklist.html aaa</a>
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <div class="header-title">BASEINFRA PROJETOS E CONSULTORIA</div>
+                <div class="header-subtitle">
+                    CHECKLIST DE DOCUMENTOS PARA PROCEDIMENTO DE SOLICITAÇÃO DE AUTORIZAÇÃO DE
+                    {{checklist_data.classificacao|upper }} <br />
+                </div>
+            </div>
+        </div>
+
+        <div class="process-info">
+            <div class="process-item">PROTOCOLO Nº: {{ checklist_data.interessado.nro_processo }}</div>
+            <div class="process-item">BIP-001-{{ checklist_data.interessado.id }}</div>
+            <div class="process-item">REVISÃO - {{ 01 }}</div>
+        </div>
+
+        <table>
+            <tr>
+                <td colspan="7" class="highlight">Interessado: {{ checklist_data.interessado|upper }}</td>
+            </tr>
+
+            <tr>
+                <td colspan="7" class="highlight">Localização de Acesso: {{ checklist_data.localizacao|upper }}</td>
+            </tr>
+            <tr>
+                <td colspan="7" class="highlight">
+                    Classificação:
+                    {% if tipo_classificacao|lower == 'ocupação' %}
+                    {{ campo_ocupacao_area }}
+                    {% else %}
+                    {{ tipo_classificacao|upper }}
+                    {% endif %}
+
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="2" class="highlight">
+                    Kilometragem: {{ checklist_data.kilometragem_inicio }} / {{ checklist_data.kilometragem_fim }}
+                </td>
+                <td colspan="2" class="highlight">BR: {{ checklist_data.nome_br|upper }}</td>
+                <td colspan="2" class="highlight">Sentido: {{ checklist_data.sentido|upper }}</td>
+                <td colspan="2" class="highlight">Tipo: {{ checklist_data.classificacao|upper }}</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="highlight">Nro Folha º: {{ checklist_data.nro_prancha|upper }}</td>
+            </tr>
+
+            <tr>
+                <td colspan="4" class="highlight">Responsável Técnico: REROND GOULART CARVALHO</td>
+                <td colspan="4" class="highlight">Interessado Técnico: {{ interessado.nome|upper }}</td>
+            </tr>
+            <td colspan="4" class="highlight">Análise Técnica: {{ checklist_data.usuario|upper }}</td>
+            <tr></tr>
+            <tr>
+                <td colspan="4" class="highlight">Data Recebimento: {{ checklist_data.data_recebimento|date:"d/m/Y" }}
+                </td>
+
+                <td colspan="3" class="highlight">Data Devolução:{{ checklist_data.data_devolucao|upper }}</td>
+            </tr>
+            <tr>
+                <td colspan="7" class="highlight">Descrição do Processo:{{ checklist_data.descricao_processo|upper }}
+                </td>
+            </tr>
+            <tr>
+                <th colspan="7" class="highlight">Nota:</th>
+            </tr>
+            <tr>
+                <td colspan="7">
+                    <ul>
+                        <li>Atualizar semanalmente os processos em andamento.</li>
+                        <li>Todos os arquivos de projetos devem ser entregues nos formatos DWG (georreferenciado) e PDF
+                            (assinado).
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+
+        <!-- Checklist Section -->
+        <div class="item-table">
+            <div class="header">ITEM</div>
+            <div class="header">TIPO DO DOCUMENTO/PROJETO NECESSÁRIOS</div>
+            <div class="header">REVISÃO</div>
+            <div class="header">SITUAÇÃO</div>
+
+            <div>1</div>
+            <div>Localização do acesso conforme SRE vigente</div>
+            <div>Rev. 01</div>
+            <div class="
+          {% if checklist_data.localizacao %}
+              green
+          {% elif checklist_data.localizacao is None %}
+              orange
+          {% else %}
+              red
+          {% endif %}
+      ">
+                {% if checklist_data.localizacao %}
+                Aprovado
+                {% elif checklist_data.localizacao is None %}
+                Revisar
+                {% else %}
+                Em Revisão
+                {% endif %}
+            </div>
+
+
+            <div>2</div>
+            <div>KM+M do início, final e do eixo do acesso</div>
+            <div>Rev. 01</div>
+            <div class="
+          {% if checklist_data.kilometragem_inicio and checklist_data.kilometragem_fim %}
+              green
+          {% elif checklist_data.kilometragem_inicio and checklist_data.kilometragem_fim is None %}
+              orange
+          {% else %}
+              red
+          {% endif %}
+      ">
+                {% if checklist_data.kilometragem_inicio and checklist_data.kilometragem_fim %}
+                Aprovado
+                {% elif checklist_data.kilometragem_inicio and checklist_data.kilometragem_fim is None %}
+                Revisar
+                {% else %}
+                Em Revisão
+                {% endif %}
+            </div>
+
+
+            <div>3</div>
+            <div>Código e trecho da rodovia</div>
+            <div>Rev. 01</div>
+            <div class="
+        {% if checklist_data.nome_br %}
+            green
+        {% elif checklist_data.nome_br is None %}
+            orange
+        {% else %}
+            red
+        {% endif %}
+    ">
+                {% if checklist_data.nome_br %}
+                Aprovado
+                {% elif checklist_data.nome_br is None %}
+                Revisar
+                {% else %}
+                Em Revisão
+                {% endif %}
+            </div>
+
+
+            <div>4</div>
+            <div>Coordenadas georreferenciadas em UTM SIRGAS 2000</div>
+            <div>Rev. 01</div>
+            <div class="
+          {% if checklist_data.coordenadas_georreferenciais_e and checklist_data.coordenadas_georreferenciais_n %}
+              green
+          {% elif checklist_data.coordenadas_georreferenciais_e and checklist_data.coordenadas_georreferenciais_n is None %}
+              orange
+          {% else %}
+              red
+          {% endif %}
+      ">
+                {% if checklist_data.coordenadas_georreferenciais_e and checklist_data.coordenadas_georreferenciais_n %}
+                Aprovado
+                {% elif checklist_data.coordenadas_georreferenciais_e is None %}
+                Revisar
+                {% else %}
+                Em Revisão
+                {% endif %}
+            </div>
+
+            <div>5</div>
+            <div>O traçado da faixa de domínio</div>
+            <div>Rev. 01</div>
+            <div class="
+          {% if checklist_data.tracado_dominio %}
+              green
+          {% elif checklist_data.tracado_dominio is None %}
+              orange
+          {% else %}
+              red
+          {% endif %}
+      ">
+                {% if checklist_data.tracado_dominio %}
+                Aprovado
+                {% elif checklist_data.tracado_dominio is None %}
+                Revisar
+                {% else %}
+                Em Revisão
+                {% endif %}
+            </div>
+
+            <div>6</div>
+            <div>Cotas e textos legíveis</div>
+            <div>Rev. 01</div>
+            <div class="
+          {% if checklist_data.cotas_legiveis %}
+              green
+          {% elif checklist_data.cotas_legiveis is None %}
+              orange
+          {% else %}
+              red
+          {% endif %}
+      ">
+                {% if checklist_data.cotas_legiveis %}
+                Aprovado
+                {% elif checklist_data.cotas_legiveis is None %}
+                Revisar
+                {% else %}
+                Em Revisão
+                {% endif %}
+            </div>
+
+
+            <div>7</div>
+            <div>Verificação da escala</div>
+            <div>Rev. 01</div>
+            <div class="
+          {% if checklist_data.escala_pdf %}
+              green
+          {% elif checklist_data.escala_pdf is None %}
+              orange
+          {% else %}
+              red
+          {% endif %}
+      ">
+                {% if checklist_data.escala_pdf %}
+                Aprovado
+                {% elif checklist_data.escala_pdf is None %}
+                Revisar
+                {% else %}
+                Em Revisão
+                {% endif %}
+            </div>
+
+            <div>8</div>
+            <div>Conferir se o memorial está de acordo com o projeto</div>
+            <div>Rev. 01</div>
+            <div class="
+          {% if checklist_data.memorial_pdf %}
+              green
+          {% elif checklist_data.memorial_pdf is None %}
+              orange
+          {% else %}
+              red
+          {% endif %}
+      ">
+                {% if checklist_data.memorial_pdf %}
+                Aprovado
+                {% elif checklist_data.memorial_pdf is None %}
+                Revisar
+                {% else %}
+                Em Revisão
+                {% endif %}
+            </div>
+
+            <div>9</div>
+            <div>Conferir larguras das pistas pelo DNIT</div>
+            <div>Rev. 01</div>
+            <div class="
+          {% if checklist_data.largura_pista_dnit %}
+              green
+          {% elif checklist_data.largura_pista_dnit is None %}
+              orange
+          {% else %}
+              red
+          {% endif %}
+      ">
+                {% if checklist_data.largura_pista_dnit %}
+                Aprovado
+                {% elif checklist_data.largura_pista_dnit is None %}
+                Revisar
+                {% else %}
+                Em Revisão
+                {% endif %}
+            </div>
+
+            <div>10</div>
+            <div>Verificar se as legendas estão de acordo com o projeto</div>
+            <div>Rev. 01</div>
+            <div class="
+          {% if checklist_data.legenda_correta %}
+              green
+          {% elif checklist_data.legenda_correta is None %}
+              orange
+          {% else %}
+              red
+          {% endif %}
+      ">
+                {% if checklist_data.legenda_correta %}
+                Aprovado
+                {% elif checklist_data.legenda_correta is None %}
+                Revisar
+                {% else %}
+                Em Revisão
+                {% endif %}
+            </div>
+
+            <div>11</div>
+            <div>Verificar anotações e notas do projeto</div>
+            <div>Rev. 01</div>
+            <div class="
+          {% if checklist_data.anotacao_nota %}
+              green
+          {% elif checklist_data.anotacao_nota is None %}
+              orange
+          {% else %}
+              red
+          {% endif %}
+      ">
+                {% if checklist_data.anotacao_nota %}
+                Aprovado
+                {% elif checklist_data.anotacao_nota is None %}
+                Revisar
+                {% else %}
+                Em Revisão
+                {% endif %}
+            </div>
+
+            <div>12</div>
+            <div>Verificar siglas e abreviações</div>
+            <div>Rev. 01</div>
+            <div class="
+          {% if checklist_data.sigla_abreviacao %}
+              green
+          {% elif checklist_data.sigla_abreviacao is None %}
+              orange
+          {% else %}
+              red
+          {% endif %}
+      ">
+                {% if checklist_data.sigla_abreviacao %}
+                Aprovado
+                {% elif checklist_data.sigla_abreviacao is None %}
+                Revisar
+                {% else %}
+                Em Revisão
+                {% endif %}
+            </div>
+
+            <div>13</div>
+            <div>Localização do acesso, quilometragem e prefixo</div>
+            <div>Rev. 01</div>
+            <div class="
+          {% if checklist_data.localizacao and checklist_data.kilometragem_inicio  %}
+              green
+          {% elif checklist_data.localizacao and checklist_data.kilometragem_inicio is None %}
+              orange
+          {% else %}
+              red
+          {% endif %}
+      ">
+                {% if checklist_data.localizacao and checklist_data.kilometragem_inicio %}
+                Aprovado
+                {% elif checklist_data.localizacao and checklist_data.kilometragem_inicio is None %}
+                Revisar
+                {% else %}
+                Em Revisão
+                {% endif %}
+            </div>
+
+            <div>14</div>
+            <div>Verificar se o carimbo apresenta as informações corretas</div>
+            <div>Rev. 01</div>
+            <div class="
+          {% if checklist_data.carimbo_correto %}
+              green
+          {% elif checklist_data.carimbo_correto is None %}
+              orange
+          {% else %}
+              red
+          {% endif %}
+      ">
+                {% if checklist_data.carimbo_correto %}
+                Aprovado
+                {% elif checklist_data.carimbo_correto is None %}
+                Revisar
+                {% else %}
+                Em Revisão
+                {% endif %}
+            </div>
+
+            <div>15</div>
+            <div>Limites de propriedade em relação à rodovia</div>
+            <div>Rev. 01</div>
+            <div class="
+          {% if checklist_data.limite_propriedade %}
+              green
+          {% elif checklist_data.limite_propriedade is None %}
+              orange
+          {% else %}
+              red
+          {% endif %}
+      ">
+                {% if checklist_data.limite_propriedade %}
+                Aprovado
+                {% elif checklist_data.limite_propriedade is None %}
+                Revisar
+                {% else %}
+                Em Revisão
+                {% endif %}
+            </div>
+
+            <div>16</div>
+            <div>Delimitação da faixa de domínio e faixa não edificante</div>
+            <div>Rev. 01</div>
+            <div class="
+          {% if checklist_data.delimitacao_dominio_nao_edificante %}
+              green
+          {% elif checklist_data.delimitacao_dominio_nao_edificante is None %}
+              orange
+          {% else %}
+              red
+          {% endif %}
+      ">
+                {% if checklist_data.delimitacao_dominio_nao_edificante %}
+                Aprovado
+                {% elif checklist_data.delimitacao_dominio_nao_edificante is None %}
+                Revisar
+                {% else %}
+                Em Revisão
+                {% endif %}
+            </div>
+
+            <div>17</div>
+            <div>ART - Anotação de Responsabilidade Técnica</div>
+            <div>Rev. 01</div>
+            <div class="
+          {% if checklist_data.art_pdf %}
+              green
+          {% elif checklist_data.art_pdf is None %}
+              orange
+          {% else %}
+              red
+          {% endif %}
+      ">
+                {% if checklist_data.art_pdf %}
+                Aprovado
+                {% elif checklist_data.art_pdf is None %}
+                Revisar
+                {% else %}
+                Em Revisão
+                {% endif %}
+            </div>
+
+        </div>
+        <div class="legend">
+            <div class="legend-title">LEGENDA</div>
+
+            <div class="legend-item">
+                <div class="color-box yellow"></div>
+                <span>A - Coleta de dados</span>
+            </div>
+            <div class="legend-item">
+                <div class="color-box blue"></div>
+                <span>B - Para Aprovação</span>
+            </div>
+            <div class="legend-item">
+                <div class="color-box green"></div>
+                <span>C - Aprovado</span>
+            </div>
+            <div class="legend-item">
+                <div class="color-box red"></div>
+                <span>D - Cancelado</span>
+            </div>
+            <div class="legend-item">
+                <div class="color-box orange"></div>
+                <span>E - Para revisão</span>
+            </div>
+            <div class="legend-item">
+                <div class="color-box lightblue"></div>
+                <span>F - Aprovado com ressalvas</span>
+            </div>
+            <div class="legend-item">
+                <div class="color-box lightblue"></div>
+                <span>G - Organizando os documentos</span>
+            </div>
+            <div class="legend-item">
+                <div class="color-box gray"></div>
+                <span>H - Não se aplica</span>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <div class="button-container">
+                <a href="{% url 'exportar_checklist' checklist_data.interessado.id checklist_data.id_pdf_validado %}"
+                    class="btn">
+                    Baixar Checklist
+                </a>
+
+
+                <a href="/overview_cliente/{{ checklist_data.interessado.id  }}/" class="btn">Voltar</a>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

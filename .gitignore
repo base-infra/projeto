@@ -1,0 +1,29 @@
+# Ignorar diretórios de cache do Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignorar ambientes virtuais
+env/
+venv/
+myenv/
+.myenv/
+
+# Ignorar arquivos de configurações do sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar arquivos de banco de dados SQLite
+*.sqlite3
+
+# Ignorar arquivos de log
+*.log
+
+# Ignorar pastas geradas pelo Django
+staticfiles/
+media/
+
+# Ignorar configurações sensíveis
+*.env
+
+repositorio-sistema-engenharia/

@@ -1,0 +1,61 @@
+<table>
+    <thead>
+        <tr> 
+            <th>Nome Interessado</th>
+            <th>Número Processo</th>
+            <th>Nome PDF</th> 
+            <th>Data de Upload</th> 
+        </tr>
+    </thead>
+    <tbody>
+        {% for pdf in pdfs %}
+            <tr style="cursor: pointer;" onclick="window.location.href='{% url 'checklist_criado' pdf.interessado.id %}'"> 
+                <td>{{ pdf.interessado.nome }}</td>
+                <td>{{ pdf.interessado.nro_processo }}</td>
+                <td>{{ pdf.nome_pdf }}</td>
+                <td>{{ pdf.uploaded_at|date:"d/m/Y H:i" }}</td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="5">Nenhum PDF encontrado.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+    
+</table>
+
+<!-- Paginação AJAX -->
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?q={{ query }}&page=1">&laquo; Primeira</a>
+            <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}">Anterior</a>
+        {% endif %}
+
+        <span class="current">
+            Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?q={{ query }}&page={{ page_obj.next_page_number }}">Próxima</a>
+            <a href="?q={{ query }}&page={{ page_obj.paginator.num_pages }}">Última &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+<script>
+    document.addEventListener('click', function(e) {
+        if (e.target.tagName === 'A' && e.target.closest('.pagination')) {
+            e.preventDefault();
+            fetch(e.target.href, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('tabela-resultados').innerHTML = html;
+            });
+        }
+    });
+</script>

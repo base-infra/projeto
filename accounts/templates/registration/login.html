@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Sistema Base Infra</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f7f7f7;
+        color: #333;
+      }
+      
+      header {
+        background-color: #00264d; /* Azul-marinho */
+        color: white;
+        padding: 20px;
+        text-align: center;
+        font-size: 24px;
+      }
+      
+      .container {
+        padding: 20px;
+        text-align: center;
+      }
+      
+      .login-form {
+        background-color: #ffffff;
+        border: 1px solid #cccccc;
+        border-radius: 10px;
+        padding: 30px;
+        width: 300px;
+        margin: 50px auto;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      
+      .login-form h2 {
+        color: #00264d;
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+      
+      .login-form label {
+        display: block;
+        text-align: left;
+        font-size: 14px;
+        margin-bottom: 5px;
+        color: #00264d;
+      }
+      
+      .login-form input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #cccccc;
+        border-radius: 5px;
+        font-size: 14px;
+      }
+      
+      .login-form button {
+        width: 100%;
+        padding: 10px;
+        background-color: #00264d; /* Azul-marinho */
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      
+      .login-form button:hover {
+        background-color: #004080;
+      }
+      
+      footer {
+        margin-top: 30px;
+        text-align: center;
+        padding: 10px;
+        background-color: #00264d;
+        color: white;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <main class="login-form">
+        <div class="cotainer">
+          <div class="row justify-content-center">
+            <div class="col-md-8">
+              <div class="card">
+                <div class="card-body">
+                  <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group row">
+                      <label for="email_address" class="col-md-4 col-form-label text-md-right">Username</label>
+                      <div class="col-md-6">
+                        <input type="text" id="email_address" class="form-control" name="username" required autofocus />
+                      </div>
+                    </div>
+
+                    <div class="form-group row">
+                      <label for="password" class="col-md-4 col-form-label text-md-right">Password</label>
+                      <div class="col-md-6">
+                        <input type="password" id="password" class="form-control" name="password" required />
+                      </div>
+                    </div>
+
+                    <div class="col-md-6 offset-md-4">
+                      <button type="submit" class="btn btn-primary">Login</button>
+                    </div>
+
+                    <!-- Exibe mensagens de erro -->
+                    {% if messages %}
+                      <div class="alert alert-success" role="alert">
+                        {% for message in messages %}
+                          {{ message }}
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

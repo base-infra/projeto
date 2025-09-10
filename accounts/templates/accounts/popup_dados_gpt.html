@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modal Independente</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"> 
+
+    <!-- jQuery (necessário para os componentes JavaScript do Bootstrap) -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+<!-- Modal -->  
+<div class="modal fade" id="dadosModal" tabindex="-1" aria-labelledby="dadosModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Dados do Cliente e IA</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Número do Processo:</strong> {{ cliente.nro_processo }}</p>
+                <input type="hidden" id="interessado_id" value="{{ cliente.id }}">
+
+                <h5>🤖 Dados Extraídos pela IA</h5>
+                {% for campo, valor in dados_chatgpt.items %}
+                {% if campo != "descricao_pdf" %}
+                    <div class="mb-3"> 
+                        <label class="form-label">{{ campo|capfirst }}:</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control"
+                                id="{{ campo }}" 
+                                value="{{ valor.valor|default:valor }}"
+                                {% if campo == "pdf_name" %} disabled {% endif %}>
+
+                            <div class="input-group-text">
+                                <input type="checkbox" class="marcar-reanalise"
+                                    name="campos_reanalise" value="{{ campo }}"
+                                    {% if campo == "pdf_name" %} disabled {% endif %}>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <input type="hidden" id="descricao_pdf" value="{{ valor }}">
+                {% endif %}
+            {% endfor %}
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-warning" id="refazerBusca">Refazer Busca</button>
+                <button id="salvarDados" data-url="{% url 'salvar_dados_pdf' %}">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+    
+
+<script>
+    $(document).ready(function(){
+        $("#formUpload").on("submit", function(event){
+            event.preventDefault(); // Evita o recarregamento da página
+    
+            let formData = new FormData(this);
+    
+            $.ajax({
+                url: $(this).attr("action"), 
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    console.log("✅ Resposta da API:", response);
+    
+                    if (response.error) {
+                        alert("Erro: " + response.error);
+                        return;
+                    }
+                    
+                    console.log("✅ response.chatgpt_data.pdf_name:", response.chatgpt_data.pdf_name);
+
+                    // ✅ Armazena o nome do PDF de forma oculta 
+                    if (response.pdf_name) { // Acesso DIRETO à propriedade
+                        $("#pdf_name").val(response.pdf_name);
+                        console.log("📄 Nome do PDF recebido:", response.pdf_name); // Novo log para debug
+                    } else {
+                        console.warn("⚠️ pdf_name não foi retornado pela API.", response);
+                    }
+
+                    // ✅ Preenche os campos da modal, exceto pdf_name
+                    let dadosExtraidos = response.chatgpt_data;
+                    for (let campo in dadosExtraidos) {
+                        if (campo !== "pdf_name") { 
+                            let item = dadosExtraidos[campo];
+                            let valor = item?.valor || item;  // Usa .valor se for objeto, senão usa direto
+                            $("#" + campo).val(valor);
+                        }
+                    }
+
+                    // ✅ Exibe a modal corretamente
+                    $("#dadosModal").modal("show");
+                },
+                error: function(xhr) {
+                    console.error("❌ Erro na requisição:", xhr.responseText);
+                    alert("Erro ao processar o PDF.");
+                }
+            });
+        });
+
+        $("#salvarDados").off("click").on("click", function(){
+            console.log("📩 Salvando dados...");
+
+            let botaoSalvar = $(this);
+            botaoSalvar.prop("disabled", true); 
+
+            let csrfToken = document.querySelector("[name=csrfmiddlewaretoken]")?.value;
+            if (!csrfToken) {
+                console.error("❌ CSRF Token não encontrado.");
+                alert("Erro ao recuperar o token de segurança. Atualize a página e tente novamente.");
+                botaoSalvar.prop("disabled", false);
+                return;
+            }
+
+            let urlSalvar = $("#salvarDados").data("url");
+            if (!urlSalvar) {
+                console.error("❌ Erro: URL de salvamento não encontrada!");
+                alert("Erro ao processar a URL de salvamento.");
+                botaoSalvar.prop("disabled", false);
+                return;
+            }
+
+            let interessadoId = $("#dadosModal").find("#interessado_id").val();  
+            if (!interessadoId) {
+                console.error("❌ Erro: Interessado ID não encontrado!");
+                alert("Erro ao identificar o cliente. Atualize a página e tente novamente.");
+                botaoSalvar.prop("disabled", false);
+                return;
+            }
+
+            // ✅ Pegando o nome do PDF antes do envio
+            let pdfName = $("#pdf_name").val();
+            if (!pdfName) {
+                console.warn("⚠️ pdf_name está vazio antes do envio!");
+            } else {
+                console.log("📂 Nome do PDF enviado:", pdfName);
+            }
+
+            let dadosSalvar = {
+                interessado_id: interessadoId,  
+                localizacao: $("#dadosModal").find("#localizacao").val() || null,
+                etapa: $("#dadosModal").find("#etapa").val() || null,
+                projeto: $("#dadosModal").find("#projeto").val() || null,
+                proprietario_cliente: $("#dadosModal").find("#proprietario_cliente").val() || null,
+                responsavel_tecnico: $("#dadosModal").find("#responsavel_tecnico").val() || null,
+                prancha: $("#dadosModal").find("#prancha").val() || null,
+                ocupacao: $("#dadosModal").find("#ocupacao").val() || null,
+                escala: $("#dadosModal").find("#escala").val() || null, 
+                descricao_pdf: $("#descricao_pdf").val() || "",
+
+
+                
+                // ✅ Enviando o nome do PDF corretamente
+                pdf_name: pdfName
+            };
+
+            console.log("📤 Enviando dados para salvar:", dadosSalvar);
+
+            $.ajax({
+                url: urlSalvar,
+                type: "POST",
+                data: JSON.stringify(dadosSalvar),
+                contentType: "application/json",
+                headers: {
+                    "X-CSRFToken": csrfToken
+                },
+                success: function(response) {
+                    console.log("✅ Dados salvos:", response);
+                    alert(response.message);
+                    $("#dadosModal").modal("hide");
+
+                    setTimeout(() => {
+                        location.reload(); 
+                    }, 500);
+                },
+                error: function(xhr) {
+                    console.error("❌ Erro ao salvar dados:", xhr.responseText);
+                    let response = JSON.parse(xhr.responseText);
+                    alert(response.error || "Erro ao salvar os dados.");
+                    botaoSalvar.prop("disabled", false); 
+                },
+                complete: function() {
+                    setTimeout(() => botaoSalvar.prop("disabled", false), 2000);
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

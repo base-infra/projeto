@@ -1,0 +1,750 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}
+Visualizar cliente
+{% endblock %}
+
+{% block extra_css %}
+<style>
+  .form-container {
+    max-width: 800px;
+    /* Aumentei a largura para acomodar duas colunas */
+    margin: 20px auto;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+
+  .form-container h2 {
+    text-align: center;
+    color: #004080;
+    margin-bottom: 30px;
+    /* Aumentei o espaçamento abaixo do título */
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* Duas colunas */
+    gap: 25px;
+    /* Aumentei o espaçamento entre os campos */
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+    /* Aumentei o espaçamento entre os grupos de campos */
+  }
+
+  .form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    /* Aumentei o espaçamento entre o label e o campo */
+    color: #004080;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    padding: 10px;
+    /* Aumentei o padding para melhorar a aparência */
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #f9f9f9;
+    /* Indica que o campo está bloqueado */
+    pointer-events: none;
+    /* Bloqueia edição */
+  }
+
+  .form-group textarea {
+    height: 100px;
+    /* Aumentei a altura da textarea */
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 30px;
+    /* Aumentei o espaçamento acima do botão */
+  }
+
+  .btn {
+    padding: 12px 24px;
+    /* Aumentei o padding do botão */
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .btn-secondary {
+    background-color: #004080;
+  }
+
+  /* Estilos para as abas */
+  .tabs {
+    display: flex;
+    margin-top: 30px;
+    /* Aumentei o espaçamento acima das abas */
+    border-bottom: 2px solid #004080;
+  }
+
+  .tab {
+    padding: 12px 24px;
+    /* Aumentei o padding das abas */
+    cursor: pointer;
+    color: #004080;
+    font-weight: bold;
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+    border-bottom: none;
+    border-radius: 5px 5px 0 0;
+    margin-right: 5px;
+  }
+
+  .tab.active {
+    background-color: #004080;
+    color: white;
+  }
+
+  .tab-content {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 5px 5px;
+    background-color: #f9f9f9;
+  }
+
+  .tab-content h3 {
+    margin-top: 0;
+    color: #004080;
+  }
+
+  /* Estilos específicos para o formulário de upload de PDF */
+  .upload-form {
+    margin-top: 20px;
+  }
+
+  .upload-form input[type='file'] {
+    margin-bottom: 15px;
+  }
+
+  .upload-form button {
+    background-color: green;
+  }
+
+  .upload-form input,
+  .upload-form textarea {
+    background-color: white !important;
+    pointer-events: auto !important;
+  }
+
+  #chatBox {
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    padding: 10px;
+    height: 400px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .message {
+    max-width: 75%;
+    padding: 10px 15px;
+    border-radius: 15px;
+    font-size: 14px;
+    line-height: 1.4;
+    position: relative;
+    word-wrap: break-word;
+  }
+
+  .user-message {
+    background-color: #dcf8c6;
+    align-self: flex-end;
+  }
+
+  .bot-message {
+    background-color: #ffffff;
+    align-self: flex-start;
+    border: 1px solid #ccc;
+  }
+
+  .timestamp {
+    font-size: 10px;
+    color: gray;
+    display: block;
+    margin-top: 5px;
+    text-align: right;
+  }
+
+  #chatInput {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<body>
+  <div class="form-container">
+    <h2>Overview Dados do cliente</h2>
+
+    <!-- Grade de Campos -->
+    <div class="form-grid">
+      <!-- Coluna 1 -->
+      <div>
+        <!-- Campo Nome -->
+        <div class="form-group">
+          <label>Cliente</label>
+          <input type="text" value="{{ cliente.nome }}" readonly />
+        </div>
+
+        <!-- Campo Número de Processo -->
+        <div class="form-group">
+          <label>Nro Processo - ERP</label>
+          <input type="text" value="{{ cliente.nro_processo }}" readonly />
+        </div>
+
+        <!-- Campo nome_concessionaria -->
+        <div class="form-group">
+          <label>Nome Concessionária</label>
+          <input type="text" value="{{ cliente.nome_concessionaria }}" readonly />
+        </div>
+
+        <!-- Campo Tipo de Projeto -->
+        <div class="form-group">
+          <label>Classificação</label>
+          <input type="text" value="{{ campo_tipo_classificao }}" id="classificacao-input" readonly />
+        </div>
+
+        {% if campo_ocupacao_area is not None %}
+        <div class="form-group" id="ocupacao-area-group">
+          <label for="ocupacao-area-input">Ocupação Área</label>
+          <input type="text" name="ocupacao_area" id="ocupacao-area-input" class="form-control"
+            value="{{ campo_ocupacao_area }}" readonly />
+        </div>
+        {% endif %}
+        <!-- Campo Fase do Projeto -->
+        <div class="form-group">
+          <label>Fase do Projeto</label>
+          <input type="text" value="{{ cliente.fase_projeto }}" readonly />
+        </div>
+
+        <!-- Campo Memorial -->
+        <div class="form-group">
+          <label>Memorial</label>
+          <input type="text" value="{{ cliente.memorial }}" readonly />
+        </div>
+
+        <!-- Campo ART -->
+        <div class="form-group">
+          <label>ART - Anotação de Responsabilidade Técnica</label>
+          <input type="text" value="{{ cliente.art }}" readonly />
+        </div>
+      </div>
+
+      <!-- Coluna 2 -->
+      <div>
+        <!-- Campo Kilometragem -->
+        <div class="form-group">
+          <label>Kilometragem</label>
+          <input type="text" value="{{ cliente.kilometragem }}" readonly />
+        </div>
+
+        <!-- Campo Rodovia -->
+        <div class="form-group">
+          <label>Rodovia</label>
+          <input type="text" value="{{ cliente.nome_br }}" readonly />
+        </div>
+
+        <!-- Campo Sentido -->
+        <div class="form-group">
+          <label>Sentido</label>
+          <input type="text" value="{{ cliente.sentido }}" readonly />
+        </div>
+
+        <!-- Campo Município -->
+        <div class="form-group">
+          <label>Município - Estado</label>
+          <input type="text" value="{{ cliente.municipio }}" readonly />
+        </div>
+
+        <!-- Campo Responsável Técnico -->
+        <div class="form-group">
+          <label>Responsável Técnico</label>
+          <input type="text" value="Rerond Goulart Carvalho" readonly />
+        </div>
+
+        <!-- Campo Analista Responsável -->
+        <div class="form-group">
+          <label>Analista Responsável</label>
+          <input type="text" value="{{ request.user.username }}" readonly />
+        </div>
+        <!-- Campo Data de Recebimento -->
+        <div class="form-group">
+          <label>Data de Recebimento</label>
+          <input type="date" value="{{ cliente.data_recebimento }}" readonly />
+        </div>
+      </div>
+    </div>
+
+    <!-- Campo Descrição do Processo (ocupa toda a largura) -->
+    <div class="form-group">
+      <label>Descrição do Processo</label>
+      <textarea readonly>{{ cliente.descricao_processo }}</textarea>
+    </div>
+
+    <!-- Abas -->
+    <div class="tabs">
+      <div class="tab active" onclick="openTab(event, 'ChatGPT')">ChatBIIA</div>
+      {% comment %} <div class="tab active" onclick="openTab(event, 'uploadPDF')">Upload PDF</div> {% endcomment %}
+      <!-- <div class="tab" id="tab-nao-validado" onclick="openTab(event, 'listaPDFs')">Lista de Checklist's</div> -->
+      <div class="tab" id="tab-validado" onclick="openTab(event, 'listaPDFsValidado')">Lista de Checklist's NEW</div>
+      <div class="tab" onclick="openTab(event, 'aprovacao')">Aprovação</div>
+    </div>
+
+    <div id="ChatGPT" class="tab-content" style="display: block;">
+      <h3>Fale com a BIIA</h3>
+      <div id="chatBox"></div>
+      <textarea id="chatInput" placeholder="Digite sua pergunta..." rows="2"></textarea>
+      <div style="margin-top: 10px;">
+        <button onclick="sendMessage()">Enviar</button>
+        <button onclick="limparConversa()">Limpar conversa</button>
+        <button onclick="gerarChecklist()">Gerar Checklist</button>
+
+        <form id="uploadPDFForm" enctype="multipart/form-data" style="margin-top: 20px;">
+          {% csrf_token %}
+          <input type="file" id="pdfFile" accept="application/pdf" required />
+          <button type="submit">Enviar PDF para análise</button>
+        </form>
+      </div>
+    </div>
+
+    {% comment %} <!-- Conteúdo das Abas -->
+    <div id="uploadPDF" class="tab-content" style="display: block;">
+      <h3>Upload PDF</h3>
+      <!-- Formulário de Upload de PDF -->
+      <div class="upload-form">
+        <form action="{% url 'upload_pdf' id=cliente.id %}" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="descricao_pdf">Descrição do PDF</label>
+            <input type="text" name="descricao_pdf" id="descricao_pdf" required />
+          </div>
+          <input type="file" name="pdf" accept="application/pdf" required />
+          <br />
+          <button type="submit" class="btn">Enviar PDF</button>
+        </form>
+      </div>
+    </div> {% endcomment %}
+
+    <div id="listaPDFsValidado" class="tab-content" style="display: none;">
+      <div id="pdfs-validado-container">
+        <!-- O conteúdo será carregado via Ajax -->
+      </div>
+    </div>
+
+
+    <div id="aprovacao" class="tab-content" style="display: none;">
+      <h3>Aprovação</h3>
+      <p>Área para aprovação de documentos.</p>
+    </div>
+
+    <!-- Botão de Voltar -->
+    <div class="button-container">
+      <a href="{% url 'listar_clientes' %}" class="btn btn-secondary">Voltar</a>
+    </div>
+  </div>
+
+  <!-- Div vazia onde o modal será carregado -->
+  <div id="modalContainer"></div>
+</body>
+
+<script>
+  window.onload = function () {
+    sessionStorage.clear();
+  };
+
+  function gerarChecklist() {
+    const clienteId = '{{ cliente.id }}'
+    const checklistData = sessionStorage.getItem('checklistData')
+
+    if (!checklistData) {
+      alert('⚠️ Nenhum checklist gerado ainda. Primeiro envie uma mensagem para a IA contendo os dados no formato CSV.')
+      return
+    }
+
+    // Codificar o JSON para a query string
+    const params = new URLSearchParams({ dados: checklistData })
+    window.location.href = `/gerar-checklist/${clienteId}/?${params.toString()}`
+  }
+
+  function formatarHoraAgora() {
+    const agora = new Date()
+    return agora.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  }
+
+  function sendMessage() {
+    const inputElement = document.getElementById('chatInput')
+    const input = inputElement.value.trim()
+    if (!input) return
+
+    const chatBox = document.getElementById('chatBox')
+    chatBox.innerHTML += `
+                                    <div class="message user-message">
+                                      ${input}
+                                      <span class="timestamp">${formatarHoraAgora()}</span>
+                                    </div>`
+
+    inputElement.value = ''
+
+    const loading = document.createElement('div')
+    loading.id = 'loadingMsg'
+    loading.className = 'message bot-message'
+    loading.innerHTML = `
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                      <span class="spinner" style="width: 18px; height: 18px; border: 3px solid #ccc; border-top: 3px solid #004080; border-radius: 50%; animation: spin 1s linear infinite;"></span>
+                                      Aguardando resposta da IA...
+                                    </div>
+                                  `
+    chatBox.appendChild(loading)
+
+    fetch('/api/chatgpt/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+      },
+      body: JSON.stringify({ message: input, nome_arquivo: sessionStorage.getItem('nome_arquivo') })
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const loadingEl = document.getElementById('loadingMsg')
+        if (loadingEl) loadingEl.remove()
+
+        if (data.json_resultado) {
+          sessionStorage.setItem('checklistData', JSON.stringify(data.json_resultado))
+        }
+
+        if (data.reply) {
+          const respostaFormatada = data.reply.replace(/\n/g, '<br>')
+          chatBox.innerHTML += `
+                                        <div class="message bot-message">
+                                          ${respostaFormatada}
+                                          <span class="timestamp">${formatarHoraAgora()}</span>
+                                        </div>`
+        } else if (data.error) {
+          chatBox.innerHTML += `<div class="message bot-message" style="color:red;">Erro: ${data.error}</div>`
+        }
+        chatBox.scrollTop = chatBox.scrollHeight
+      })
+      .catch((error) => {
+        const loadingEl = document.getElementById('loadingMsg')
+        if (loadingEl) loadingEl.remove()
+        alert('Erro ao comunicar com a IA.')
+      })
+  }
+
+  function limparConversa() {
+    fetch('/api/chatgpt/clear/').then(() => {
+      document.getElementById('chatBox').innerHTML = ''
+    })
+  }
+
+  document.getElementById('uploadPDFForm').addEventListener('submit', function (e) {
+    e.preventDefault()
+    const fileInput = document.getElementById('pdfFile')
+    const inputText = document.getElementById('chatInput').value.trim()
+
+    // if (!inputText) {
+    //   alert('Por favor, digite um comentário no campo de chat antes de enviar o PDF.');
+    //   return;
+    // }
+
+    const loading = document.createElement('div')
+    loading.id = 'loadingMsg'
+    loading.className = 'message bot-message'
+    loading.innerHTML = `
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                      <span class="spinner" style="width: 18px; height: 18px; border: 3px solid #ccc; border-top: 3px solid #004080; border-radius: 50%; animation: spin 1s linear infinite;"></span>
+                                      Aguardando resposta da IA...
+                                    </div>
+                                  `
+    chatBox.appendChild(loading)
+
+    const formData = new FormData()
+    formData.append('pdf', fileInput.files[0])
+    formData.append('nome_arquivo', fileInput.files[0].name);
+    const interessadoId = window.location.pathname.split('/').filter(Boolean).pop();
+    formData.append('interessado_id', interessadoId);
+
+    fetch('/api/chatgpt/analisar-pdf/', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+      }
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const chatBox = document.getElementById('chatBox')
+        const nomeArquivo = data.nome_arquivo;
+        sessionStorage.setItem('nome_arquivo', nomeArquivo);
+
+        const loadingEl = document.getElementById('loadingMsg')
+        if (loadingEl) loadingEl.remove()
+
+        if (data.reply) {
+          const respostaFormatada = data.reply.replace(/\n/g, '<br>')
+          chatBox.innerHTML += `
+                                        <div class="message bot-message">
+                                          ${respostaFormatada}
+                                          <span class="timestamp">${formatarHoraAgora()}</span>
+                                        </div>`
+        } else {
+          chatBox.innerHTML += `
+                                        <div class="message bot-message" style="color:red;">
+                                          Erro: ${data.error}
+                                        </div>`
+        }
+        if (data.json_resultado) {
+          sessionStorage.setItem('checklistData', JSON.stringify(data.json_resultado))
+        }
+        chatBox.scrollTop = chatBox.scrollHeight
+      })
+      .catch((error) => {
+        alert('Erro ao enviar PDF.')
+        console.error(error)
+      })
+  })
+
+
+  $(document).ready(function () {
+    function carregarModal(chatgpt_data) {
+      let clienteId = '{{ cliente.id }}' // Obtém o ID do cliente do Django Template
+
+      if (!clienteId) {
+        console.error('❌ Erro: ID do cliente não encontrado.')
+        alert('Erro ao identificar o cliente. Atualize a página e tente novamente. func function carregarModal')
+        return
+      }
+
+      // Adiciona o ID do cliente aos dados antes de enviar
+      let dadosEnviar = {
+        cliente_id: clienteId, // Adiciona o ID do cliente
+        dados_chatgpt: chatgpt_data // Mantém os dados extraídos da IA
+      }
+
+      console.log('📤 Enviando dados do cliente para mostrar_popup_dados:', dadosEnviar)
+
+      $.ajax({
+        url: '/mostrar-popup-dados/',
+        type: 'POST',
+        data: JSON.stringify(dadosEnviar), // Enviar JSON puro
+        contentType: 'application/json',
+        headers: {
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        success: function (modalHtml) {
+          $('#modalContainer').html(modalHtml) // Insere o HTML retornado no container
+          $('#dadosModal').modal('show') // Exibe a modal
+        },
+        error: function (xhr) {
+          console.error('❌ Erro ao carregar a modal:', xhr.responseText)
+          alert('Erro ao carregar a modal.')
+        }
+      })
+    }
+
+    $('.upload-form form').submit(function (e) {
+      e.preventDefault()
+
+      let formData = new FormData(this)
+
+      $.ajax({
+        url: "{% url 'upload_pdf' id=cliente.id %}",
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        headers: {
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        success: function (data) {
+          console.log('Dados recebidos do ChatGPT:', data)
+          carregarModal(data) //  Passa os dados recebidos para carregar a modal
+        },
+        error: function (xhr) {
+          console.error('Erro ao processar o PDF:', xhr.responseText)
+          alert('Erro ao processar o PDF.')
+        }
+      })
+    })
+  })
+</script>
+
+<script>
+  $('#refazerBusca').click(function () {
+    if (camposParaReanalise.length === 0) {
+      alert('❌ Nenhum campo foi marcado para reanálise.')
+      return
+    }
+
+    let dadosReanalise = {
+      campos: camposParaReanalise,
+      cache_dados: {}
+    }
+
+    // Capturar os valores atuais para manter os que não foram alterados
+    $('.form-control').each(function () {
+      let campo = $(this).attr('id')
+      dadosReanalise.cache_dados[campo] = $(this).val()
+    })
+
+    // 🔍 Depuração no Console do Navegador
+    console.log('📤 Enviando para reanálise:', dadosReanalise)
+
+    $.ajax({
+      url: "{% url 'reanalisar_dados_pdf' %}",
+      type: 'POST',
+      data: JSON.stringify(dadosReanalise),
+      contentType: 'application/json',
+      headers: {
+        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+      },
+      success: function (novosDados) {
+        console.log('📥 Dados atualizados recebidos:', novosDados)
+
+        // Atualiza apenas os campos reanalisados
+        for (let campo in novosDados) {
+          $('#' + campo).val(novosDados[campo])
+          $('#' + campo).css('border', '2px solid green') // ✅ Marcar como atualizado
+        }
+
+        camposParaReanalise = [] // 🔄 Limpa a lista para novas reanálises
+      },
+      error: function (xhr) {
+        console.error('❌ Erro ao reanalisar dados:', xhr.responseText)
+        alert('Erro ao reanalisar dados.')
+      }
+    })
+  })
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var classificacaoInput = document.getElementById('classificacao-input')
+    var ocupacaoAreaGroup = document.getElementById('ocupacao-area-group')
+    var ocupacaoAreaInput = document.getElementById('ocupacao-area-input')
+
+    if (!classificacaoInput) {
+      console.error('Elemento classificacao-input não encontrado!')
+      return
+    }
+
+    var classificacaoValor = classificacaoInput.value ? classificacaoInput.value.trim().toLowerCase() : ''
+    var ocupacaoAreaValor = ocupacaoAreaInput ? ocupacaoAreaInput.value.trim() : ''
+
+    if (classificacaoValor === 'ocupação' && ocupacaoAreaGroup) {
+      ocupacaoAreaGroup.style.display = 'block'
+      if (ocupacaoAreaInput) {
+        ocupacaoAreaInput.setAttribute('readonly', 'readonly')
+      }
+    }
+  })
+</script>
+
+<script>
+  function openTab(event, tabId) {
+    var i, tabcontent, tablinks
+
+    // Oculta todas as abas
+    tabcontent = document.getElementsByClassName('tab-content')
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = 'none'
+    }
+
+    // Remove a classe "active" de todas as abas
+    tablinks = document.getElementsByClassName('tab')
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].classList.remove('active')
+    }
+
+    // Exibe a aba clicada
+    document.getElementById(tabId).style.display = 'block'
+    event.currentTarget.classList.add('active')
+  }
+</script>
+
+<script>
+  let abaValidadoAtiva = false;
+
+  $(document).ready(function () {
+    console.log('✅ jQuery carregado. Script de paginação ativado.')
+  });
+
+  function carregarPdfs(clienteId, page = 1) {
+    if (!clienteId) {
+      console.error('Erro: clienteId está vazio.');
+      return;
+    }
+
+    console.log('🔄 Solicitando PDFs para o cliente ID:', clienteId, 'Página:', page);
+
+    let url = `/pdfs-validado-ajax/${clienteId}/`;
+    let targetDiv = '#pdfs-validado-container';
+
+    $.ajax({
+      url: url,
+      type: 'GET',
+      data: { page: page },
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
+      success: function (response) {
+        console.log('✅ PDFs carregados com sucesso.');
+        $(targetDiv).html(response); // insere na aba correta
+      },
+      error: function (xhr) {
+        console.error('❌ Erro ao carregar PDFs:', xhr.responseText);
+        alert('Erro ao carregar a lista de PDFs.');
+      }
+    });
+  }
+
+  // Aba VALIDADO
+  $("#tab-validado").click(function () {
+    abaValidadoAtiva = true;
+    let clienteId = '{{ cliente.id }}';
+    if (clienteId) {
+      carregarPdfs(clienteId, 1);
+    }
+  });
+
+  $(document).on('click', '.pagination-link', function (event) {
+    event.preventDefault();
+    let page = $(this).data('page');
+    let clienteId = '{{ cliente.id }}';
+    carregarPdfs(clienteId, page);
+  });
+</script>
+{% endblock %}

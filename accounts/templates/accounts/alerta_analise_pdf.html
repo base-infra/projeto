@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alerta de Divergência</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #e0e0e0;
+        margin: 0;
+        padding: 0;
+      }
+      
+      .modal {
+        display: block;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+      
+      .modal-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        width: 400px;
+        margin: 15% auto;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+      
+      .modal-buttons {
+        margin-top: 20px;
+      }
+      
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 14px;
+      }
+      
+      .btn-confirm {
+        background-color: #b30000;
+        color: white;
+      }
+      
+      .btn-cancel {
+        background-color: #00264d;
+        color: white;
+      }
+      
+      .btn:hover {
+        opacity: 0.9;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Modal de Divergência -->
+    <div id="modalDivergencia" class="modal">
+      <div class="modal-content">
+        <h2>⚠️ Alerta de Divergência</h2>
+        <p>
+          <strong>{{ mensagem_alerta }}</strong>
+        </p>
+        <p>
+          <strong>Nome no PDF:</strong> {{ cliente_pdf }}
+        </p>
+        <p>
+          <strong>Nome no Cadastro:</strong> {{ cliente_cadastro }}
+        </p>
+        <div class="modal-buttons">
+          <button class="btn btn-confirm" onclick="fecharModal()">OK</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function fecharModal() {
+        document.getElementById('modalDivergencia').style.display = 'none'
+        window.location.href = '/overview_cliente/{{ interessado.id }}/' // Redireciona após fechar
+      }
+    </script>
+  </body>
+</html>

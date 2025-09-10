@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Listagem de Interessados</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #e0e0e0;
+        color: #333;
+        margin: 0;
+        padding: 0;
+      }
+      
+      .container {
+        max-width: 100%;
+        margin: 20px auto;
+        background-color: #f0f0f0;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      
+      h1 {
+        color: #00264d;
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 24px;
+      }
+      
+      .table-container {
+        overflow-x: auto; /* Permite rolagem horizontal para evitar quebras */
+      }
+      
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+      
+      th,
+      td {
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #ddd;
+        word-break: normal; /* Evita quebras desnecessárias */
+      }
+      
+      th {
+        background-color: #004080;
+        color: white;
+      }
+      
+      tr:hover {
+        background-color: #f9f9f9;
+      }
+      
+      .actions {
+        display: flex;
+        gap: 5px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      
+      .actions a {
+        min-width: 80px;
+        text-align: center;
+        padding: 5px 10px;
+        background-color: #00264d;
+        color: white;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 12px;
+      }
+      
+      .actions a:hover {
+        background-color: #004080;
+      }
+      
+      .btn:hover {
+        background-color: #004080;
+      }
+      
+      .btn-delete {
+        background-color: #b30000;
+      }
+      
+      .btn-delete:hover {
+        background-color: #ff1a1a;
+      }
+      .btn-pdf {
+        background-color: #28a745; /* Cor verde */
+      }
+      
+      .btn-pdf:hover {
+        background-color: #218838; /* Cor verde escuro ao passar o mouse */
+      }
+      
+      .button-container {
+        text-align: center;
+        margin-top: 20px;
+      }
+      
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 20px;
+        }
+      
+        table {
+          font-size: 12px;
+        }
+      
+        th,
+        td {
+          padding: 8px;
+        }
+      
+        .actions a {
+          font-size: 10px;
+          padding: 5px;
+          min-width: 70px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Listagem de Interessados</h1>
+      <div class="table-container">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Número Processo</th>
+              <th>Fase Projeto</th>
+              <th>Classificação Projeto</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for interessado in page_obj %}
+              <tr>
+                <td>{{ interessado.id }}</td>
+                <td>{{ interessado.nome|upper }}</td>
+                <td>{{ interessado.nro_processo }}</td>
+                <td>{{ interessado.fase_projeto }}</td>
+                <td>{{ interessado.classificacao_projeto }}</td>
+                <td>
+                  <!-- Botões de ação -->
+                  <div class="actions">
+                    <a href="{% url 'editar_interessado' interessado.id %}" class="btn">Alterar</a>
+                    <a href="{% url 'excluir_interessado' interessado.id %}" class="btn btn-delete">Excluir</a>
+                    <a href="{% url 'upload_pdf' id=interessado.id %}" class="btn btn-pdf">Subir PDF</a>
+                    <a href="{% url 'list-checklist-int' id=interessado.id %}" class="btn btn-pdf">Listar PDF</a>
+                  </div>
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="6">Nenhum registro encontrado.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <a href="{% url 'home' %}" class="btn">Voltar</a>
+
+        <nav aria-label="Page navigation">
+          <ul class="pagination">
+            {% if page_obj.has_previous %}
+              <li class="page-item">
+                <a class="page-link" href="?page=1">Primeiro</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+              </li>
+            {% endif %}
+
+            <li class="page-item disabled">
+              <span class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+            </li>
+
+            {% if page_obj.has_next %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Próximo</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Último</a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </body>
+</html>

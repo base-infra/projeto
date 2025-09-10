@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Confirmar Exclusão</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #e0e0e0;
+        color: #333;
+        margin: 0;
+        padding: 0;
+      }
+      
+      .container {
+        max-width: 600px;
+        margin: 50px auto;
+        background-color: #f0f0f0;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+      
+      h1 {
+        color: #b30000;
+        margin-bottom: 20px;
+      }
+      
+      p {
+        margin-bottom: 30px;
+      }
+      
+      .btn {
+        padding: 10px 20px;
+        text-decoration: none;
+        color: white;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+        margin: 0 10px;
+      }
+      
+      .btn-confirm {
+        background-color: #b30000;
+      }
+      
+      .btn-cancel {
+        background-color: #00264d;
+      }
+      
+      .btn:hover {
+        opacity: 0.9;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Confirmar Exclusão</h1>
+      <p>
+        Tem certeza de que deseja excluir <strong>{{ interessado.nome }}</strong>?
+      </p>
+      <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-confirm">Excluir</button>
+        <a href="{% url 'listar_clientes' %}" class="btn btn-cancel">Cancelar</a>
+      </form>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,217 @@
+{% extends 'accounts/base.html' %}
+{% include 'accounts/upload_modal.html' %}
+{% block title %}
+  Lista de Clientes
+{% endblock %}
+
+{% block content %}
+  {% load static %}
+
+  <!DOCTYPE html>
+  <html lang="pt-BR">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Baseinfra - Clientes</title>
+      <style>
+        .clientes-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 20px;
+        }
+        
+        .clientes-header h2 {
+          margin: 0;
+          font-size: 24px;
+          color: #004080;
+        }
+        
+        .clientes-header .botoes {
+          display: flex;
+          gap: 10px;
+        }
+        
+        .clientes-header .botoes button {
+          padding: 10px 20px;
+          border: none;
+          border-radius: 5px;
+          color: white;
+          font-size: 16px;
+          cursor: pointer;
+        }
+        
+        .clientes-header .botoes .novo {
+          background-color: green;
+        }
+        
+        .clientes-header .botoes .alterar {
+          background-color: #004080;
+        }
+        
+        .clientes-header .botoes .excluir {
+          background-color: red;
+        }
+        
+        .clientes-header .botoes .analise {
+          background-color: green;
+        }
+        
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          background-color: white;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        table th,
+        table td {
+          padding: 12px;
+          text-align: left;
+          border-bottom: 1px solid #ddd;
+        }
+        
+        table th {
+          background-color: #004080;
+          color: white;
+        }
+        
+        table tr:hover {
+          background-color: #f1f1f1;
+        }
+        
+        footer {
+          background-color: #333;
+          color: white;
+          text-align: center;
+          padding: 10px;
+          position: fixed;
+          bottom: 0;
+          width: 100%;
+        }
+        
+        .botoes {
+          display: flex;
+          gap: 10px;
+        }
+        
+        .pagination {
+          margin-top: 20px;
+          display: flex;
+          justify-content: center;
+          gap: 10px;
+        }
+        
+        .pagination a,
+        .pagination span {
+          padding: 8px 16px;
+          text-decoration: none;
+          border: 1px solid #ddd;
+          border-radius: 5px;
+          color: #004080;
+        }
+        
+        .pagination a:hover {
+          background-color: #004080;
+          color: white;
+        }
+        
+        .pagination .current {
+          background-color: #004080;
+          color: white;
+          border-color: #004080;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="clientes-header">
+          <h2>Listagem de Clientes</h2>
+          <div class="botoes">
+            <button class="novo" onclick="location.href='{% url 'cadastro_view' %}'">Novo</button>
+          </div>
+        </div>
+        <!-- Campo de Pesquisa -->
+        <form method="GET" action="" style="margin-bottom: 20px; display: flex; gap: 10px; align-items: center;">
+          <input type="text" name="q" placeholder="Pesquisar por ID, nome ou processo" style="padding: 10px; width: 300px; border-radius: 5px; border: 1px solid #ccc;" />
+
+          <button type="submit" style="padding: 10px 20px; border: none; background-color: #004080; color: white; border-radius: 5px; cursor: pointer;">Pesquisar</button>
+
+          <a href="{% url 'listar_clientes' %}" style="display: inline-block; text-align: center; padding: 10px 20px; background-color: grey; color: white; text-decoration: none; border-radius: 5px; cursor: pointer;">Limpar</a>
+        </form>
+
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Número Processo</th>
+              <th>Fase Projeto</th>
+              <th>Classificação Projeto</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for cliente in page_obj %}
+              <tr>
+                <td>{{ cliente.id }}</td>
+                <td>{{ cliente.nome|upper }}</td>
+                <td>{{ cliente.nro_processo }}</td>
+                <td>{{ cliente.fase_projeto }}</td>
+                <td>{{ cliente.classificacao_projeto }}</td>
+                <td>
+                  <div class="clientes-header">
+                    <div class="botoes">
+                      <button class="analise" onclick="overviewCliente({{ cliente.id }})">Overview</button>
+                      {% comment %} <button class="analise" onclick="analisePDFCliente({{ cliente.id }})">Analise PDF</button> {% endcomment %}
+                      <button class="alterar" onclick="editarCliente( {{ cliente.id }})">Alterar</button>
+                      <button class="excluir" onclick="excluirCliente({{ cliente.id }})">Excluir</button>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <!-- Paginação -->
+        <div class="pagination">
+          <span class="step-links">
+            {% if page_obj.has_previous %}
+              <a href="?page=1">&laquo; Primeira</a>
+              <a href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+            {% endif %}
+
+            <span class="current">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.</span>
+
+            {% if page_obj.has_next %}
+              <a href="?page={{ page_obj.next_page_number }}">Próxima</a>
+              <a href="?page={{ page_obj.paginator.num_pages }}">Última &raquo;</a>
+            {% endif %}
+          </span>
+        </div>
+      </div>
+
+      <script>
+        function overviewCliente(clienteId) {
+          // Redireciona para a página de subir arquivos em pdf com o ID do cliente
+          window.location.href = `/overview_cliente/${clienteId}/`
+        }
+        function analisePDFCliente(clienteId) {
+          // Redireciona para a página de subir arquivos em pdf com o ID do cliente
+          window.location.href = `/upload_pdf/${clienteId}/`
+        }
+        
+        function editarCliente(clienteId) {
+          // Redireciona para a página de edição com o ID do cliente
+          window.location.href = `/editar/${clienteId}/`
+        }
+        
+        function excluirCliente(clienteId) {
+          // Redireciona para a página de exclusão com o ID do cliente
+          window.location.href = `/excluir/${clienteId}/`
+        }
+      </script>
+    </body>
+  </html>
+{% endblock %}

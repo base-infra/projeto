@@ -1,0 +1,172 @@
+<style>
+    .pdfs-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .pdfs-header h2 {
+        margin: 0;
+        font-size: 24px;
+        color: #004080;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    table th,
+    table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    table th {
+        background-color: #004080;
+        color: white;
+    }
+
+    table tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .pagination {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .pagination a,
+    .pagination span {
+        padding: 8px 16px;
+        text-decoration: none;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        color: #004080;
+    }
+
+    .pagination a:hover {
+        background-color: #004080;
+        color: white;
+    }
+
+    .pagination .current {
+        background-color: #004080;
+        color: white;
+        border-color: #004080;
+    }
+
+    .btn-verde {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-verde:hover {
+        background-color: #218838;
+    }
+</style>
+
+<table>
+    <thead>
+        <tr>
+            <!-- <th>Nome do Arquivo</th>-->
+            <th>ID</th>
+            <th>Nome do Arquivo</th>
+            <th>Data de Upload</th>
+            <th>% de Assertivade</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for pdf in pdfs %}
+        <tr class="clickable-row" data-interessado="{{ pdf.interessado.id }}" data-pdf="{{ pdf.id_pdf_validado }}">
+            <td>{{ pdf.id_pdf_validado }}</td>
+            <td>{{ pdf.nome_arquivo }}</td>
+            <td>{{ pdf.data_upload|date:"d/m/Y, H:i" }}</td>
+            <td>{{ pdf.assertividade|default:0 }}%</td>
+            <td>
+                <button class="btn-verde checklist-btn" data-interessado="{{ pdf.interessado.id }}"
+                    data-pdf="{{ pdf.id_pdf_validado }}">
+                    Checklist
+                </button>
+                <button class="btn-verde assertividade" data-interessado="{{ pdf.interessado.id }}"
+                    data-pdf="{{ pdf.id_pdf_validado }}">
+                    Assertivade
+                </button>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5" style="text-align: center;">Nenhum PDF encontrado.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+
+
+</table>
+
+<!-- PAGINAÇÃO -->
+<div class="pagination">
+    {% if pdfs.has_previous %}
+    <a href="#" class="pagination-link" data-page="1">&laquo; Primeira</a>
+    <a href="#" class="pagination-link" data-page="{{ pdfs.previous_page_number }}">Anterior</a>
+    {% endif %}
+
+    <span class="current">Página {{ pdfs.number }} de {{ pdfs.paginator.num_pages }}</span>
+
+    {% if pdfs.has_next %}
+    <a href="#" class="pagination-link" data-page="{{ pdfs.next_page_number }}">Próxima</a>
+    <a href="#" class="pagination-link" data-page="{{ pdfs.paginator.num_pages }}">Última &raquo;</a>
+    {% endif %}
+</div>
+
+<script>
+    // Clique na linha
+    // $(document).on("click", ".clickable-row", function () {
+    //     let clienteId = $(this).data("interessado")
+    //     let pdfId = $(this).data("pdf");
+
+    //     if (clienteId && pdfId) {
+    //         console.log(`🔄 Redirecionando para /pdfs-recuperado/${clienteId}/${pdfId}/`);
+    //         window.location.href = `/pdfs-recuperado/${clienteId}/${pdfId}/`;
+    //     } else {
+    //         console.error("❌ Erro: Cliente ID ou PDF ID não encontrados.");
+    //     }
+    // });
+
+    // Clique no botão "Checklist"
+    $(document).on("click", ".checklist-btn", function (event) {
+        event.stopPropagation(); // Impede que o clique também ative o clique da linha
+
+        let clienteId = $(this).data("interessado");
+        let pdfId = $(this).data("pdf");
+
+        console.log(`✅ Botão 'Checklist' clicado → Redirecionando`);
+        window.location.href = `/pdfs-recuperado/${clienteId}/${pdfId}/`;
+    });
+
+    // Clique no botão "Assertividade"
+    $(document).on("click", ".assertividade", function (event) {
+        event.stopPropagation(); // Evita clique na linha
+
+        let clienteId = $(this).data("interessado");
+        let pdfId = $(this).data("pdf");
+
+        console.log(`✅ Botão 'Assertividade' clicado → Redirecionando`);
+        window.location.href = `/dados-assertividade/${clienteId}/${pdfId}/`;
+    });
+
+</script>

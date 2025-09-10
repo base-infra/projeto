@@ -1,0 +1,212 @@
+{% extends 'accounts/base.html' %}
+{% include 'accounts/upload_modal.html' %}
+{% block title %}
+Listagem de Checklists
+{% endblock %}
+
+{% block content %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Baseinfra - Checklists</title>
+  <style>
+    .checklist-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .checklist-header h2 {
+      margin: 0;
+      font-size: 24px;
+      color: #004080;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    table th,
+    table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    table th {
+      background-color: #004080;
+      color: white;
+    }
+
+    table tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    .pagination {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .pagination a,
+    .pagination span {
+      padding: 8px 16px;
+      text-decoration: none;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      color: #004080;
+    }
+
+    .pagination a:hover {
+      background-color: #004080;
+      color: white;
+    }
+
+    .pagination .current {
+      background-color: #004080;
+      color: white;
+      border-color: #004080;
+    }
+
+    .checklist-header .botoes .analise {
+      background-color: green;
+    }
+
+    .botoes {
+      display: flex;
+      gap: 10px;
+    }
+
+    .botoes .analise {
+      background-color: green;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="checklist-header">
+      <h2>Listagem de Checklists</h2>
+    </div>
+
+    <!-- Campo de Pesquisa -->
+    <form method="GET" action="{% url 'listar_query_checklists' %}"
+      style="margin-bottom: 20px; display: flex; gap: 10px; align-items: center;">
+      <input type="text" name="q" placeholder="Pesquisar por ID, nome ou processo"
+        style="padding: 10px; width: 300px; border-radius: 5px; border: 1px solid #ccc;" />
+      <button type="submit"
+        style="padding: 10px 20px; border: none; background-color: #004080; color: white; border-radius: 5px; cursor: pointer;">Pesquisar</button>
+
+      <a href="{% url 'listar_query_checklists' %}"
+        style="display: inline-block; text-align: center; padding: 10px 20px; background-color: grey; color: white; text-decoration: none; border-radius: 5px; cursor: pointer;">Limpar</a>
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nome Interessado</th>
+          <th>Número Processo</th>
+          <th>Nome PDF</th>
+          <th>Descrição PDF</th>
+          <th>Rodovia</th>
+          <th>KM</th>
+          <th>Data de Upload</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for pdf in pdfs %}
+        <tr class="clickable-row" data-interessado="{{ pdf.interessado.id }}">
+          <td>{{ pdf.interessado.nome }}</td>
+          <td>{{ pdf.interessado.nro_processo }}</td>
+          <td>{{ pdf.nome_arquivo }}</td>
+          <td>{{ pdf.descricao_processo }}</td>
+          <td>{{ pdf.nome_br }}</td>
+          <td>{{ pdf.kilometragem_inicio }} / {{ pdf.kilometragem_fim }}</td>
+          <td>{{ pdf.data_upload|date:'d/m/Y H:i' }}</td>
+
+          <td>
+            <div class="checklist-header">
+              <div class="botoes">
+                <button class="analise"
+                  onclick="overviewChecklist('{{ pdf.interessado.id }}', '{{ pdf.id_pdf_validado }}')">Overview</button>
+              </div>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5">Nenhum PDF encontrado.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <!-- Paginação -->
+    <div class="pagination">
+      <span class="step-links">
+        {% if page_obj.has_previous %}
+        <a href="?{% if query %}
+                  
+                  q={{ query }}&
+
+                {% endif %}page=1">
+          &laquo; Primeira
+        </a>
+        <a href="?{% if query %}
+                  
+                  q={{ query }}&
+
+                {% endif %}page={{ page_obj.previous_page_number }}">
+          Anterior
+        </a>
+        {% endif %}
+
+        <span class="current">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.</span>
+
+        {% if page_obj.has_next %}
+        <a href="?{% if query %}
+                  
+                  q={{ query }}&
+
+                {% endif %}page={{ page_obj.next_page_number }}">
+          Próxima
+        </a>
+        <a href="?{% if query %}
+                  
+                  q={{ query }}&
+
+                {% endif %}page={{ page_obj.paginator.num_pages }}">
+          Última &raquo;
+        </a>
+        {% endif %}
+      </span>
+    </div>
+  </div>
+</body>
+
+</html>
+<script>
+  function overviewChecklist(clienteId, pdfId) {
+    const url = `/gerar-checklist-criado-analises/${clienteId}/${pdfId}/`;
+    console.log("🔗 Redirecionando para:", url);
+    window.location.href = url;
+  }
+
+</script>
+{% endblock %}

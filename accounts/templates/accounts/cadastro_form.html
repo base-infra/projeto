@@ -1,0 +1,268 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}
+  Cadastro de Interessado
+{% endblock %}
+
+{% block extra_css %}
+  <style>
+    .form-container {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      background: white;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+    
+    .form-container h2 {
+      text-align: center;
+      color: #004080;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #004080;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    
+    .form-group textarea {
+      height: 80px;
+    }
+    
+    .button-container {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    
+    .btn-primary {
+      background-color: green;
+    }
+    
+    .btn-secondary {
+      background-color: #004080;
+    }
+    
+    .btn-danger {
+      background-color: red;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <div class="form-container">
+    <h2>Dados do Interessado</h2>
+    <form method="POST">
+      {% csrf_token %}
+
+      <!-- Campo Nome -->
+      <div class="form-group">
+        <label for="{{ form.nome.id_for_label }}">Interessado</label>
+        {{ form.nome }}
+      </div>
+
+      <!-- Campo nro_processo -->
+      <div class="form-group">
+        <label for="{{ form.nome.id_for_label }}">Nro Processo</label>
+        {{ form.nro_processo }}
+      </div>
+
+      <!-- Campo nome_concessionaria -->
+      <div class="form-group">
+        <label for="{{ form.nome.id_for_label }}">Nome Concessionária</label>
+        {{ form.nome_concessionaria }}
+      </div>
+
+      <!-- Campo projeto -->
+      <div class="form-group">
+        <label for="{{ form.tipo_projeto.id_for_label }}">Tipo de Projeto</label>
+        {{ form.tipo_projeto }}
+      </div>
+
+      <div class="form-group" id="ocupacao-area-group" style="display: none;">
+        <label for="ocupacao-area-input">Ocupação Área</label>
+        <input type="text" name="ocupacao_area" id="ocupacao-area-input" class="form-control" disabled />
+      </div>
+
+      <div class="form-group col-md-6">
+        <label for="{{ form.fase_projeto.id_for_label }}">Fase do Projeto</label>
+        {{ form.fase_projeto }}
+      </div>
+
+      <!-- Campo Tipo de Acesso (Oculto por padrão) -->
+      <div class="form-group" id="acesso-group" style="display: none;">
+        <label for="{{ form.tipo_acesso.id_for_label }}">Classificação</label>
+        {{ form.tipo_acesso }}
+      </div>
+
+      <!-- Campo Tipo de ocupacao (Oculto por padrão) -->
+      <div class="form-group" id="ocupacao-group" style="display: none;">
+        <label for="{{ form.tipo_ocupacao.id_for_label }}">Classificação</label>
+        {{ form.tipo_ocupacao }}
+      </div>
+
+      <div class="form-row">
+        <!-- Campo Tipo de Publicidade (Oculto por padrão) -->
+        <div class="form-group" id="publicidade-group" style="display: none;">
+          <label for="{{ form.tipo_publicidade.id_for_label }}">Classificação</label>
+          {{ form.tipo_publicidade }}
+        </div>
+      </div>
+
+      <!-- Campo MEMORIAL -->
+      <div class="form-group">
+        <label for="{{ form.memorial.id_for_label }}">Memorial</label>
+        {{ form.memorial }}
+      </div>
+
+      <!-- Campo ART -->
+      <div class="form-group">
+        <label for="{{ form.art.id_for_label }}">ART - Anotação de Responsabilidade Técnica</label>
+        {{ form.art }}
+      </div>
+      <!-- Campo Kilometragem, BR e Sentido agrupados -->
+      <div class="grid-container">
+        <div class="form-group">
+          <label for="{{ form.kilometragem.id_for_label }}">Kilometragem</label>
+          {{ form.kilometragem }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.br.id_for_label }}">Rodovia</label>
+          {{ form.nome_br }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.sentido.id_for_label }}">Sentido</label>
+          {{ form.sentido }}
+        </div>
+      </div>
+      <div class="grid-container">
+        <!-- Campo Município -->
+        <div class="form-group">
+          <label for="{{ form.municipio.id_for_label }}">Município - Estado</label>
+          {{ form.municipio }}
+        </div>
+      </div>
+
+      <!-- Campo Responsável Técnico -->
+      <div class="form-group">
+        <label for="responsavel_tecnico">Responsável Técnico</label>
+        <input type="text" id="responsavel_tecnico" class="form-control" value="Rerond Goulart Carvalho" readonly />
+      </div>
+
+      <!-- Campo Responsável Técnico -->
+      <div class="form-group">
+        <label for="{{ request.user.username }}">Analista Responsável</label>
+        {{ request.user.username }}
+      </div>
+
+      <style>
+        input[type='date'] {
+          display: inline-block !important;
+        }
+      </style>
+
+      <div class="form-group">
+        <label for="id_data_recebimento">Data de Recebimento:</label>
+        <input type="date" id="id_data_recebimento" name="data_recebimento" value="{{ form.data_recebimento.value|default_if_none:'' }}" />
+      </div>
+
+      <!-- Campo Descrição do Processo -->
+      <div class="form-group">
+        <label for="{{ form.descricao_processo.id_for_label }}">Descrição do Processo</label>
+        {{ form.descricao_processo }}
+      </div>
+
+      <div class="button-container">
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        <a href="{% url 'home' %}" class="btn btn-secondary">Voltar</a>
+      </div>
+    </form>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const ocupacaoSelect = document.getElementById('{{ form.tipo_projeto.id_for_label }}')
+      const fieldGroups = {
+        ocupacao: document.getElementById('ocupacao-group'),
+        publicidade: document.getElementById('publicidade-group'),
+        acesso: document.getElementById('acesso-group')
+      }
+    
+      // Referências para o campo "Ocupação Área"
+      const ocupacaoAreaGroup = document.getElementById('ocupacao-area-group')
+      const ocupacaoAreaInput = document.getElementById('ocupacao-area-input')
+    
+      function toggleFields() {
+        const selectedValue = ocupacaoSelect.value
+    
+        // Oculta todos os grupos e reseta valores dos campos ocultos
+        Object.keys(fieldGroups).forEach((key) => {
+          const group = fieldGroups[key]
+    
+          if (group) {
+            group.style.display = 'none'
+    
+            // Limpa os selects dentro do grupo ocultado
+            const selectsInGroup = group.querySelectorAll('select')
+            selectsInGroup.forEach((select) => {
+              select.value = '' // Define como vazio (Django trata como NULL)
+              select.removeAttribute('required') // Remove obrigatoriedade
+            })
+          }
+        })
+    
+        // Exibe o grupo correspondente e ativa os selects dentro dele
+        if (fieldGroups[selectedValue]) {
+          fieldGroups[selectedValue].style.display = 'block'
+    
+          const selectsInVisibleGroup = fieldGroups[selectedValue].querySelectorAll('select')
+          selectsInVisibleGroup.forEach((select) => {
+            select.setAttribute('required', 'required')
+          })
+        }
+    
+        // Se "OCUPAÇÃO" for selecionado, exibe e habilita o campo "Ocupação Área"
+        if (selectedValue === 'ocupacao') {
+          ocupacaoAreaGroup.style.display = 'block'
+          ocupacaoAreaInput.removeAttribute('disabled') // Habilita o campo para entrada de dados
+          ocupacaoAreaInput.setAttribute('required', 'required') // Torna obrigatório
+        } else {
+          ocupacaoAreaGroup.style.display = 'none'
+          ocupacaoAreaInput.setAttribute('disabled', 'true') // Desabilita campo
+          ocupacaoAreaInput.removeAttribute('required') // Remove obrigatoriedade
+          ocupacaoAreaInput.value = '' // Limpa o campo se o usuário mudar de ideia
+        }
+      }
+    
+      if (ocupacaoSelect) {
+        ocupacaoSelect.addEventListener('change', toggleFields)
+        toggleFields() // Inicializa corretamente os campos
+      }
+    })
+  </script>
+{% endblock %}

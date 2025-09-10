@@ -1,0 +1,309 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}
+Visualizar Assertividade
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-container {
+        max-width: 800px;
+        /* Aumentei a largura para acomodar duas colunas */
+        margin: 20px auto;
+        padding: 20px;
+        background: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
+
+    .form-container h2 {
+        text-align: center;
+        color: #004080;
+        margin-bottom: 30px;
+        /* Aumentei o espaçamento abaixo do título */
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        /* Duas colunas */
+        gap: 25px;
+        /* Aumentei o espaçamento entre os campos */
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        /* Aumentei o espaçamento entre os grupos de campos */
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 8px;
+        /* Aumentei o espaçamento entre o label e o campo */
+        color: #004080;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 10px;
+        /* Aumentei o padding para melhorar a aparência */
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+        background-color: #f9f9f9;
+        /* Indica que o campo está bloqueado */
+        pointer-events: none;
+        /* Bloqueia edição */
+    }
+
+    .form-group textarea {
+        height: 100px;
+        /* Aumentei a altura da textarea */
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 30px;
+        /* Aumentei o espaçamento acima do botão */
+    }
+
+    .btn {
+        padding: 12px 24px;
+        /* Aumentei o padding do botão */
+        border: none;
+        border-radius: 5px;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .btn-secondary {
+        background-color: #004080;
+    }
+
+    /* Estilos para as abas */
+    .tabs {
+        display: flex;
+        margin-top: 30px;
+        /* Aumentei o espaçamento acima das abas */
+        border-bottom: 2px solid #004080;
+    }
+
+    .tab {
+        padding: 12px 24px;
+        /* Aumentei o padding das abas */
+        cursor: pointer;
+        color: #004080;
+        font-weight: bold;
+        background-color: #f4f4f4;
+        border: 1px solid #ddd;
+        border-bottom: none;
+        border-radius: 5px 5px 0 0;
+        margin-right: 5px;
+    }
+
+    .tab.active {
+        background-color: #004080;
+        color: white;
+    }
+
+    .tab-content {
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-top: none;
+        border-radius: 0 0 5px 5px;
+        background-color: #f9f9f9;
+    }
+
+    .tab-content h3 {
+        margin-top: 0;
+        color: #004080;
+    }
+
+    /* Estilos específicos para o formulário de upload de PDF */
+    .upload-form {
+        margin-top: 20px;
+    }
+
+    .upload-form input[type='file'] {
+        margin-bottom: 15px;
+    }
+
+    .upload-form button {
+        background-color: green;
+    }
+
+    .upload-form input,
+    .upload-form textarea {
+        background-color: white !important;
+        pointer-events: auto !important;
+    }
+
+    #chatBox {
+        background-color: #f0f0f0;
+        border-radius: 8px;
+        padding: 10px;
+        height: 400px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .message {
+        max-width: 75%;
+        padding: 10px 15px;
+        border-radius: 15px;
+        font-size: 14px;
+        line-height: 1.4;
+        position: relative;
+        word-wrap: break-word;
+    }
+
+    .user-message {
+        background-color: #dcf8c6;
+        align-self: flex-end;
+    }
+
+    .bot-message {
+        background-color: #ffffff;
+        align-self: flex-start;
+        border: 1px solid #ccc;
+    }
+
+    .timestamp {
+        font-size: 10px;
+        color: gray;
+        display: block;
+        margin-top: 5px;
+        text-align: right;
+    }
+
+    #chatInput {
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+
+    .lado-a-lado {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-top: 30px;
+        position: relative;
+    }
+
+    .lado-a-lado::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        width: 1px;
+        background-color: #ccc;
+    }
+
+    .box-comparacao {
+        padding: 20px;
+        background: #f9f9f9;
+        border-radius: 6px;
+        overflow-x: auto;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        max-height: 600px;
+    }
+
+    .box-comparacao h3 {
+        color: #004080;
+        margin-top: 0;
+    }
+
+    .info-basica {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 20px;
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="form-container">
+    <h2>Overview Comparação</h2>
+
+    <div class="info-basica">
+        <div class="form-group">
+            <label>Cliente</label>
+            <input type="text" value="{{ interessado.nome }}">
+        </div>
+
+        <div class="form-group">
+            <label>ID do PDF</label>
+            <input type="text" value="{{ pdf.id_pdf_validado }}">
+        </div>
+
+        <div class="form-group">
+            <label>Campos Corrigidos</label>
+            <input type="text" value="{{ campos_corrigidos }}">
+        </div>
+    </div>
+
+    <div class="lado-a-lado">
+        <div class="box-comparacao">
+            <h3>Resposta Corrigida</h3>
+            <div id="respostaCorrigidaBox"></div>
+        </div>
+
+        <div class="box-comparacao">
+            <h3>Resposta GPT</h3>
+            <div id="respostaGptBox"></div>
+        </div>
+    </div>
+
+    <div class="button-container">
+        <a href="javascript:history.back()" class="btn btn-secondary">Voltar</a>
+    </div>
+</div>
+
+<!-- 👇 Aqui ficam os dados JSON injetados para os scripts -->
+{{ resposta_corrigida|json_script:"resposta_corrigida_json" }}
+{{ resposta_gpt|json_script:"resposta_gpt_json" }}
+
+<script>
+    // Resposta Corrigida ordenada
+    const corrigidaData = JSON.parse(document.getElementById("resposta_corrigida_json").textContent);
+    const corrigidaOrdenada = Object.keys(corrigidaData).sort().reduce((obj, key) => {
+        obj[key] = corrigidaData[key];
+        return obj;
+    }, {});
+    document.getElementById("respostaCorrigidaBox").innerHTML =
+        `<pre>${JSON.stringify(corrigidaOrdenada, null, 2)}</pre>`;
+
+    // Resposta GPT ordenada
+    const gptData = JSON.parse(document.getElementById("resposta_gpt_json").textContent);
+    const gptOrdenado = Object.keys(gptData).sort().reduce((obj, key) => {
+        obj[key] = gptData[key];
+        return obj;
+    }, {});
+    document.getElementById("respostaGptBox").innerHTML =
+        `<pre>${JSON.stringify(gptOrdenado, null, 2)}</pre>`;
+</script>
+{% endblock %}

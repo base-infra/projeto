@@ -1,0 +1,200 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Baseinfra - Home</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+
+    header {
+      background-color: #004080;
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo-container img {
+      max-width: 80px;
+      /* Aumentei o tamanho da logo */
+      height: auto;
+      /* Mantém a proporção da imagem */
+      margin-right: 15px;
+      /* Aumentei o espaço entre a logo e o texto */
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+      /* Aumentei o tamanho do texto */
+      font-weight: bold;
+      /* Deixei o texto em negrito */
+    }
+
+    header .user-info {
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      /* Espaço entre o nome do usuário e o botão "Sair" */
+    }
+
+    header .user-info button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 5px 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    header .user-info button:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      /* Efeito hover sutil */
+    }
+
+    nav {
+      background-color: #333;
+      color: white;
+      padding: 10px;
+      text-align: center;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 15px;
+      font-size: 18px;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      padding: 20px;
+      text-align: center;
+    }
+
+    .menu {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .menu-item {
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      width: 200px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s;
+    }
+
+    .menu-item:hover {
+      transform: scale(1.05);
+    }
+
+    .menu-item h2 {
+      margin: 0;
+      font-size: 20px;
+      color: #004080;
+    }
+
+    .menu-item p {
+      margin: 10px 0 0;
+      font-size: 14px;
+      color: #666;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    footer {
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo-container">
+      <img src="{% static 'logo/logo2.png' %}" alt="Baseinfra Logo" />
+      <h1>Baseinfra</h1>
+    </div>
+
+    {% if request.user.is_authenticated %}
+    <div class="user-info">
+      <span>Bem-vindo, {{ request.user.username }}!</span>
+      <form action="{% url 'logout' %}" method="post" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit">Sair</button>
+      </form>
+    </div>
+    {% endif %}
+  </header>
+
+  <nav>
+    <a href="../home">Início</a>
+    <a href="../clientes">Clientes</a>
+    <a href="../listar-checklists">Analises</a>
+    <a>Aprovados</a>
+  </nav>
+
+  <div class="container">
+    <h1>Bem-vindo ao SysBaseinfra</h1>
+    <div class="menu">
+      <a href="../clientes">
+        <div class="menu-item">
+          <h2>Clientes</h2>
+          <p>Gerencie seus clientes</p>
+        </div>
+      </a>
+      <a href="../listar-checklists">
+        <div class="menu-item">
+          <h2>Análises</h2>
+          <p>Gerencie suas análises</p>
+        </div>
+      </a>
+      <a>
+        <div class="menu-item">
+          <h2>Aprovados</h2>
+          <p>Gerencie seus PDFS</p>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <footer>&copy; 2025 GRC Solutions. Todos os direitos reservados.</footer>
+</body>
+
+</html>

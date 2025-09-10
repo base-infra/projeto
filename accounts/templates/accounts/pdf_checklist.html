@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Informações do Processo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #e0e0e0;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 50px auto;
+      background-color: #f0f0f0;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #00264d;
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 24px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 30px;
+    }
+
+    .header-left {
+      text-align: left;
+    }
+
+    .header-title {
+      font-size: 22px;
+      font-weight: bold;
+      color: #00264d;
+      margin-bottom: 5px;
+    }
+
+    .header-subtitle {
+      font-size: 18px;
+      line-height: 1.5;
+      font-weight: bold;
+      color: #00264d;
+      margin-bottom: 10px;
+    }
+
+    .process-number {
+      font-size: 16px;
+      font-weight: bold;
+      background-color: #004080;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: left;
+      font-size: 16px;
+    }
+
+    th {
+      background-color: #00264d;
+      color: white;
+      font-weight: bold;
+    }
+
+    td.highlight {
+      font-weight: bold;
+      color: #00264d;
+    }
+
+    .item-table {
+      display: grid;
+      grid-template-columns: 1fr 2fr 1fr 1fr;
+      border: 1px solid black;
+      margin-top: 20px;
+    }
+
+    .item-table div {
+      padding: 8px;
+      border-bottom: 1px solid black;
+      border-right: 1px solid black;
+      background-color: #e0e0e0;
+    }
+
+    .item-table div.header {
+      background-color: #00264d;
+      color: white;
+      font-weight: bold;
+      text-align: center;
+      padding: 10px;
+      margin: 0;
+    }
+
+    .item-table div:last-child {
+      border-right: none;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      background-color: #00264d;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      background-color: #004080;
+    }
+
+    .button-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .legend {
+      margin-top: 30px;
+      border: 1px solid black;
+      padding: 10px;
+    }
+
+    .legend-title {
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .color-box {
+      width: 30px;
+      height: 15px;
+      margin-right: 10px;
+      border: 1px solid black;
+    }
+
+    .yellow {
+      background-color: yellow;
+    }
+
+    .blue {
+      background-color: #004080;
+    }
+
+    .orange {
+      background-color: orange;
+    }
+
+    .lightblue {
+      background-color: #00bfff;
+    }
+
+    .gray {
+      background-color: gray;
+    }
+
+    .green {
+      background-color: green;
+      color: green;
+    }
+
+    .red {
+      background-color: red;
+      color: red;
+    }
+  </style>
+  <style>
+    .orange {
+      color: orange;
+      /* Define a cor do texto como laranja */
+      font-weight: bold;
+      /* (Opcional) Deixa o texto em negrito */
+      font-size: 16px;
+      /* (Opcional) Ajusta o tamanho da fonte */
+    }
+  </style>
+</head>
+
+<body>
+  <a>pdf_checklist.html</a>
+  <div class="container">
+    <div class="header">
+      <div class="header-left">
+        <div class="header-title">BASEINFRA Projetos e Consultoria</div>
+        <div class="header-subtitle">
+          CHECKLIST DE DOCUMENTOS PARA<br />
+          PROCEDIMENTO DE SOLICITAÇÃO DE AUTORIZAÇÃO<br />
+          DE ACESSO VIÁRIO {{ tipo_projeto|upper }}
+        </div>
+      </div>
+      <div class="process-number">PROTOCOLO Nº: {{ interessado.nro_processo }}</div>
+      <div class="process-number">BIP-001-{{ interessado.id }}</div>
+      <div class="process-number">REVISÃO - 01</div>
+    </div>
+
+    <table>
+      <tr>
+        <td colspan="7" class="highlight">Interessado: {{ interessado.nome|upper }}</td>
+      </tr>
+
+      <tr>
+        <td colspan="7" class="highlight">Localização de Acesso: {{ interessado.kilometragem|upper }}</td>
+      </tr>
+      <tr>
+        <td colspan="7" class="highlight">Classificação: {{ tipo_projeto|upper }}</td>
+      </tr>
+
+      <tr>
+        <td colspan="2" class="highlight">Kilometragem: {{ interessado.kilometragem }}</td>
+        <td colspan="2" class="highlight">BR: {{ interessado.nome_br|upper }}</td>
+        <td colspan="2" class="highlight">Sentido: {{ interessado.sentido|upper }}</td>
+        <td colspan="2" class="highlight">Tipo: {{ tipo_classificao|upper }}</td>
+      </tr>
+      <tr>
+        <td colspan="2" class="highlight">Nro Folha º: {{ prancha|upper }}</td>
+      </tr>
+
+      <tr>
+        <td colspan="4" class="highlight">Responsável Técnico: Rerond Goulart Carvalho</td>
+        <td colspan="4" class="highlight">Interessado Técnico: {{ interessado.nome|upper }}</td>
+      </tr>
+      <td colspan="4" class="highlight">Análise Técnica: {{ usuario_responsavel|upper }}</td>
+      <tr></tr>
+      <tr>
+        <td colspan="4" class="highlight">Data Recebimento:{{ interessado.data_recebimento|date:"d/m/Y" }}</td>
+        <td colspan="3" class="highlight">Data Devolução:{{ interessado.data_devolucao|upper }}</td>
+      </tr>
+      <tr>
+        <td colspan="7" class="highlight">Descrição do Processo:{{ interessado.descricao_processo|upper }}</td>
+      </tr>
+      <tr>
+        <th colspan="7" class="highlight">Nota:</th>
+      </tr>
+      <tr>
+        <td colspan="7">
+          <ul>
+            <li>Atualizar semanalmente os processos em andamento.</li>
+            <li>Todos os arquivos de projetos devem ser entregues nos formatos DWG (georreferenciado) e PDF (assinado).
+            </li>
+          </ul>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Checklist Section -->
+    <div class="item-table">
+      <div class="header">ITEM</div>
+      <div class="header">TIPO DO DOCUMENTO/PROJETO NECESSÁRIOS</div>
+      <div class="header">REVISÃO</div>
+      <div class="header">SITUAÇÃO</div>
+
+      <div>1</div>
+      <div>Localização do acesso conforme SRE vigente</div>
+      <div>Rev. 01</div>
+      <div class="{% if checklist_data.localizacao %}
+            
+            
+             green
+
+
+          {% else %}
+            
+            
+             red
+
+
+          {% endif %}">
+        {% if checklist_data.localizacao %}
+        Aprovado
+        {% else %}
+        Em Revisão
+        {% endif %}
+      </div>
+
+      <div>2</div>
+      <div>KM+M do início, final e do eixo do acesso</div>
+      <div>Rev. 01</div>
+      <div class="{% if interessado.kilometragem %}
+            
+            
+             green
+
+
+          {% else %}
+            
+            
+             red
+
+
+          {% endif %}">
+        {% if interessado.kilometragem %}
+        Aprovado
+        {% else %}
+        Em Revisão
+        {% endif %}
+      </div>
+
+      <div>3</div>
+      <div>Código e trecho da rodovia</div>
+      <div>Rev. 01</div>
+      <div class="{% if interessado.nome_br %}
+            
+            
+             green
+
+
+          {% else %}
+            
+            
+             red
+
+
+          {% endif %}">
+        {% if interessado.nome_br %}
+        Aprovado
+        {% else %}
+        Em Revisão
+        {% endif %}
+      </div>
+
+      <div>4</div>
+      <div>Coordenadas georreferenciadas em UTM SIRGAS 2000</div>
+      <div>Rev. 01</div>
+      <div class="orange">Para revisão</div>
+
+      <div>5</div>
+      <div>O traçado da faixa de domínio</div>
+      <div>Rev. 01</div>
+      <div class="orange">Para revisão</div>
+
+      <div>6</div>
+      <div>Cotas e textos legíveis</div>
+      <div>Rev. 01</div>
+      <div>PROX ENTREGA</div>
+
+      <div>7</div>
+      <div>Verificação da escala</div>
+      <div>Rev. 01</div>
+      <div>PROX ENTREGA</div>
+
+      <div>8</div>
+      <div>Conferir se o memorial está de acordo com o projeto</div>
+      <div>Rev. 01</div>
+      <div class="orange">Para revisão</div>
+      {% comment %} <div class="{% if interessado.memorial == 'sim' %}
+            
+            
+            green
+
+
+          {% else %}
+            
+            
+            orange
+
+
+          {% endif %}">
+        {% if interessado.memorial == 'sim' %}
+        Aprovado
+        {% else %}
+        Para revisão
+        {% endif %}
+      </div> {% endcomment %}
+
+      <div>9</div>
+      <div>Conferir larguras das pistas pelo DNIT</div>
+      <div>Rev. 01</div>
+      <div>PROX ENTREGA</div>
+
+      <div>10</div>
+      <div>Verificar se as legendas estão de acordo com o projeto</div>
+      <div>Rev. 01</div>
+      <div>PROX ENTREGA</div>
+
+      <div>11</div>
+      <div>Verificar anotações e notas do projeto</div>
+      <div>Rev. 01</div>
+      <div class="orange">Para revisão</div>
+
+      <div>12</div>
+      <div>Verificar siglas e abreviações</div>
+      <div>Rev. 01</div>
+      <div class="orange">Para revisão</div>
+
+      <div>13</div>
+      <div>Localização do acesso, quilometragem e prefixo</div>
+      <div>Rev. 01</div>
+      <div class="orange">Para revisão</div>
+
+      <div>14</div>
+      <div>Verificar se o carimbo apresenta as informações corretas</div>
+      <div>Rev. 01</div>
+      <div>PROX ENTREGA</div>
+
+      <div>15</div>
+      <div>Limites de propriedade em relação à rodovia</div>
+      <div>Rev. 01</div>
+      <div>PROX ENTREGA</div>
+
+      <div>16</div>
+      <div>Delimitação da faixa de domínio e faixa não edificante</div>
+      <div>Rev. 01</div>
+      <div>PROX ENTREGA</div>
+
+      <div>17</div>
+      <div>ART - Anotação de Responsabilidade Técnica</div>
+      <div>Rev. 01</div>
+      <div class="orange">Para revisão</div>
+      {% comment %} <div class="{% if interessado.art == 'sim' %}
+            
+            
+            green
+
+
+          {% else %}
+            
+            
+            orange
+
+
+          {% endif %}">
+        {% if interessado.art == 'sim' %}
+        Aprovado
+        {% else %}
+        Para revisão
+        {% endif %}
+      </div> {% endcomment %}
+    </div>
+    <div class="legend">
+      <div class="legend-title">LEGENDA</div>
+
+      <div class="legend-item">
+        <div class="color-box yellow"></div>
+        <span>A - Coleta de dados</span>
+      </div>
+      <div class="legend-item">
+        <div class="color-box blue"></div>
+        <span>B - Para Aprovação</span>
+      </div>
+      <div class="legend-item">
+        <div class="color-box green"></div>
+        <span>C - Aprovado</span>
+      </div>
+      <div class="legend-item">
+        <div class="color-box red"></div>
+        <span>D - Cancelado</span>
+      </div>
+      <div class="legend-item">
+        <div class="color-box orange"></div>
+        <span>E - Para revisão</span>
+      </div>
+      <div class="legend-item">
+        <div class="color-box lightblue"></div>
+        <span>F - Aprovado com ressalvas</span>
+      </div>
+      <div class="legend-item">
+        <div class="color-box lightblue"></div>
+        <span>G - Organizando os documentos</span>
+      </div>
+      <div class="legend-item">
+        <div class="color-box gray"></div>
+        <span>H - Não se aplica</span>
+      </div>
+    </div>
+
+    <div class="button-container">
+      <a href="{% url 'download_checklist' %}" class="btn">Baixar Checklist</a>
+    </div>
+  </div>
+</body>
+
+</html>

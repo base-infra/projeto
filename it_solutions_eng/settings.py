@@ -106,7 +106,7 @@ WSGI_APPLICATION = 'it_solutions_eng.wsgi.application'
 
 
 def get_secret(secret_name):
-    region_name = "us-east-2"  # Ajusta se usares outra região
+    region_name = "us-east-1"  # Ajusta se usares outra região
 
     session = boto3.session.Session()
     client = session.client(service_name='secretsmanager', region_name=region_name)
@@ -119,20 +119,20 @@ def get_secret(secret_name):
         raise Exception(f"Erro ao obter segredo: {e}")
     
 SECRET_NAME = "secret-db-sistema-engenharia"
-# secrets = get_secret(SECRET_NAME)
+secrets = get_secret(SECRET_NAME)
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': secrets['dbInstanceIdentifier'],
-#         'USER': secrets['username'],
-#         'PASSWORD': secrets['password'],
-#         'HOST': secrets['host'],
-#         'PORT': secrets['port'],
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': secrets['dbInstanceIdentifier'],
+        'USER': secrets['username'],
+        'PASSWORD': secrets['password'],
+        'HOST': secrets['host'],
+        'PORT': secrets['port'],
+    }
+}
 
-# SECRET_KEY = get_secret("secret-django-key")['SECRET_KEY']
+SECRET_KEY = get_secret("secret-django-key")['SECRET_KEY']
 
 
 

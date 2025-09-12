@@ -49,7 +49,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['3.143.214.203','127.0.0.1', 'localhost', '3.145.200.145']
+ALLOWED_HOSTS = ['3.143.214.203','127.0.0.1', 'localhost', '3.145.200.145','44.220.159.237',
+                 'ec2-44-220-159-237.compute-1.amazonaws.com']
 
 #teste
 

@@ -14,7 +14,7 @@ from pathlib import Path
 import os
 import boto3
 import json
-import os
+from dotenv import load_dotenv
 from botocore.exceptions import ClientError
 
 
@@ -39,8 +39,8 @@ LOGOUT_REDIRECT_URL = '/login/'  # Página após logout
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -132,6 +132,7 @@ DATABASES = {
         'PORT': secrets['port'],
     }
 }
+
 
 SECRET_KEY = get_secret("secret-django-key")['SECRET_KEY']
 
